@@ -37,15 +37,13 @@ jobs:
       - name: Build with Maven
         run: mvn clean install
 
-      - name: List target directory
-        run: ls -l target
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
       - name: Copy JAR file
-        run: cp target/*.jar $HOME/myapp/app.jar
+        run: cp target/TelegramBot-1.0-SNAPSHOT.jar $HOME/myapp/app.jar
 
       - name: SSH Deploy
         uses: appleboy/ssh-action@master

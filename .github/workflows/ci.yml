@@ -54,9 +54,12 @@ jobs:
         run: pwd
 
       - name: Copy JAR file
-        run: |
-          mkdir -p $HOME/myapp
-          cp target/TelegramBot-3.2.2.jar $HOME/myapp/app.jar
+        run: | 
+              cd target
+              pwd
+              ls -l
+              mkdir -p $HOME/myapp
+              cp TelegramBot-3.2.2.jar $HOME/myapp/app.jar
 
       - name: SSH Deploy
         uses: appleboy/ssh-action@master
@@ -66,6 +69,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            scp $HOME/myapp/app.jar user@remote:/myapp
-             cd /myapp
-             java -jar app.jar
+            cd /myapp
+            java -jar app.jar

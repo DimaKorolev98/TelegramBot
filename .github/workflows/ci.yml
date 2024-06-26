@@ -33,7 +33,10 @@ jobs:
 
 
       - name: Build with Maven
-        run: mvn clean package
+        run: | 
+            mvn clean package
+            mkdir -p $HOME/myapp
+            cp target/TelegramBot-3.2.2.jar $HOME/myapp/app.jar
 
       - name: List target directory
         run: ls -l target
@@ -44,16 +47,6 @@ jobs:
 
     steps:
 
-      - name: Where i am
-        run: pwd
-
-      - name: Copy JAR file
-        run: | 
-              pwd
-              ls -l
-              mkdir -p $HOME/myapp
-              cp target/TelegramBot-3.2.2.jar $HOME/myapp/app.jar
-
       - name: SSH Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -62,5 +55,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            scp $HOME/myapp/app.jar user@remote:/myapp
             cd /myapp
             java -jar app.jar

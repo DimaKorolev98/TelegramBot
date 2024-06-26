@@ -50,8 +50,8 @@ jobs:
         uses: actions/checkout@v2
 
         
-      - name: Go to target
-        run: cd /home/runner/work/TelegramBot/TelegramBot
+      - name: Where i am
+        run: pwd
       
       - name: Copy JAR file
         run: cp ~/home/runner/work/TelegramBot/TelegramBot/target/TelegramBot-3.2.2.jar $HOME/myapp/app.jar

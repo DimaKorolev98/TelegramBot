@@ -33,19 +33,19 @@ jobs:
             mvn clean package
             echo $HOME
             mkdir -p $HOME/myapp
-            cp target/TelegramBot-3.2.2.jar $HOME/myapp/app.jar
+            cp target/TelegramBot-3.2.2.jar /home/myapp/app.jar
             
       - name: List target directory
         run: ls -l target
 
       - name: List myapp directory
-        run: ls -l $HOME/myapp
+        run: ls -l /home/myapp
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: myapp
-          path: $HOME/myapp/app.jar
+          path: /home/myapp/app.jar
 
   deploy:
     needs: build

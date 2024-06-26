@@ -49,7 +49,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-
       - name: SSH Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -58,6 +57,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            scp $HOME/myapp/app.jar root@193.124.45.147:/myapp
+            mkdir -p /path/to/remote/directory
+            scp $HOME/myapp/app.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp
             cd /myapp
             java -jar app.jar

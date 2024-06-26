@@ -13,15 +13,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
           java-version: '17'
           distribution: 'adopt'
           architecture: 'x64'
-          server-id: 'github'
-          server-username: ${{ github.actor }}
-          server-password: ${{ github.token }}
 
       - name: Cache Maven packages
         uses: actions/cache@v2
@@ -30,16 +27,21 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-
-
+            
       - name: Build with Maven
-        run: | 
+        run: |
             mvn clean package
             mkdir -p $HOME/myapp
             cp target/TelegramBot-3.2.2.jar $HOME/myapp/app.jar
-
+            
       - name: List target directory
         run: ls -l target
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: myapp
+          path: $HOME/myapp/app.jar
 
   deploy:
     needs: build
@@ -49,12 +51,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Copy Jar
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: myapp
+          path: $HOME/myapp
+
+      - name: Add SSH key to known_hosts
         run: |
-          pwd
-          cd $HOME/myapp
-          ls -la
-          scp $HOME/myapp/app.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: SSH Deploy
         uses: appleboy/ssh-action@master
@@ -64,9 +70,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            pwd
             mkdir -p /myapp
+            scp $HOME/myapp/app.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp
             cd /myapp
-            pwd
-            ls
             java -jar app.jar

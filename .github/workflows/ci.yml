@@ -55,6 +55,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            scp $HOME/myapp/app.jar user@remote:/myapp
+            scp $HOME/myapp/app.jar root@193.124.45.147:/myapp
             cd /myapp
             java -jar app.jar

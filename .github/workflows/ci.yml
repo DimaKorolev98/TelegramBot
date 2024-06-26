@@ -55,7 +55,6 @@ jobs:
 
       - name: Copy JAR file
         run: | 
-              cd target
               pwd
               ls -l
               mkdir -p $HOME/myapp

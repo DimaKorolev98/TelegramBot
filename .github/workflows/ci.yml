@@ -48,15 +48,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
-      - name: Where is jar
-        run: whereis TelegramBot-1.0-SNAPSHOT.jar
+
         
       - name: Go to target
         run: cd /home/runner/work/TelegramBot/TelegramBot
       
       - name: Copy JAR file
-        run: cp target/TelegramBot-1.0-SNAPSHOT.jar $HOME/myapp/app.jar
+        run: cp ~/home/runner/work/TelegramBot/TelegramBot/target/TelegramBot-3.2.2.jar $HOME/myapp/app.jar
 
       - name: SSH Deploy
         uses: appleboy/ssh-action@master

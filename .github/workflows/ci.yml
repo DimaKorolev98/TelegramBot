@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,47 +28,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
             
-      - name: Build with Maven
+      - name: Build and Deploy
         run: |
             mvn clean package
-            cp target/*.jar $HOME/app.jar
+            mkdir -p $HOME/myapp
+            cp target/*.jar $HOME/myapp/app.jar
             
-      - name: List target directory
-        run: ls -l target
+            # Add SSH key to known_hosts
+            mkdir -p ~/.ssh
+            ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: myapp
-          path: $HOME/app.jar
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: myapp
-          path: $HOME
-
-      - name: Add SSH key to known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
-      - name: SSH Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            mkdir -p /myapp
-            scp $HOME/myapp/app.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp
-            ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd /myapp && java -jar app.jar"
+            # SSH Deploy
+            ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
+              mkdir -p /myapp
+              scp $HOME/myapp/app.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp
+              cd /myapp && java -jar app.jar
+            "

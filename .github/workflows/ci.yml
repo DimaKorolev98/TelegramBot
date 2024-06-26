@@ -31,7 +31,7 @@ jobs:
       - name: Build with Maven
         run: |
             mvn clean package
-            cp target/*.jar $HOME/myapp/app.jar
+            cp target/*.jar $HOME/app.jar
             
       - name: List target directory
         run: ls -l target
@@ -54,10 +54,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: myapp
-          path: $HOME/myapp
-
-      - name: List downloaded artifacts
-        run: ls -l $HOME/myapp
+          path: $HOME
 
       - name: Add SSH key to known_hosts
         run: |

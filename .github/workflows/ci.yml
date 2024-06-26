@@ -31,20 +31,16 @@ jobs:
       - name: Build with Maven
         run: |
             mvn clean package
-            mkdir -p $HOME/myapp
             cp target/*.jar $HOME/myapp/app.jar
             
       - name: List target directory
         run: ls -l target
 
-      - name: List myapp directory
-        run: ls -l $HOME/myapp
-
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: myapp
-          path: $HOME/myapp/app.jar
+          path: $HOME/app.jar
 
   deploy:
     needs: build

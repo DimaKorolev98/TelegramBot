@@ -32,7 +32,7 @@ jobs:
         run: |
             mvn clean package
             mkdir -p $HOME/myapp
-            cp target/TelegramBot-3.2.2.jar $HOME/myapp/app.jar
+            cp target/*.jar $HOME/myapp/app.jar
             
       - name: List target directory
         run: ls -l target
@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: myapp
-          path: $HOME/app.jar
+          path: $HOME/myapp/app.jar
 
   deploy:
     needs: build
@@ -78,5 +78,4 @@ jobs:
           script: |
             mkdir -p /myapp
             scp $HOME/myapp/app.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp
-            cd /myapp
-            java -jar app.jar
+            ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd /myapp && java -jar app.jar"

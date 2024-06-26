@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: Copy JAR file
-        run: cp /home/runner/work/TelegramBot/TelegramBot/target/TelegramBot-1.0-SNAPSHOT.jar $HOME/myapp/app.jar
+        run: cp /target/TelegramBot-1.0-SNAPSHOT.jar $HOME/myapp/app.jar
 
       - name: SSH Deploy
         uses: appleboy/ssh-action@master

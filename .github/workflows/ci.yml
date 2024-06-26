@@ -46,6 +46,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Copy JAR file
         run: cp target/TelegramBot-1.0-SNAPSHOT.jar $HOME/myapp/app.jar
 

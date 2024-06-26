@@ -37,6 +37,9 @@ jobs:
       - name: List target directory
         run: ls -l target
 
+      - name: List myapp directory
+        run: ls -l $HOME/myapp
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -56,6 +59,9 @@ jobs:
         with:
           name: myapp
           path: $HOME/myapp
+
+      - name: List downloaded artifacts
+        run: ls -l $HOME/myapp
 
       - name: Add SSH key to known_hosts
         run: |

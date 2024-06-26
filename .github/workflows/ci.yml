@@ -53,6 +53,8 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: Date
+        run: date
 
       - name: SSH Deploy
         uses: appleboy/ssh-action@master

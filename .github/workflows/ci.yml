@@ -55,7 +55,7 @@ jobs:
               pwd
               ls -l
               mkdir -p $HOME/myapp
-              cp TelegramBot-3.2.2.jar $HOME/myapp/app.jar
+              cp target/TelegramBot-3.2.2.jar $HOME/myapp/app.jar
 
       - name: SSH Deploy
         uses: appleboy/ssh-action@master

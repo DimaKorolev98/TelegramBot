@@ -44,7 +44,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: myapp
-          path: $HOME/myapp/app.jar
+          path: $HOME/app.jar
 
   deploy:
     needs: build

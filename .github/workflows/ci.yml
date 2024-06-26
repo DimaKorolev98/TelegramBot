@@ -52,6 +52,8 @@ jobs:
       - name: Copy Jar
         run: |
           pwd
+          cd /myapp
+          ls -la
           scp $HOME/myapp/app.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp
 
       - name: SSH Deploy

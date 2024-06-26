@@ -31,8 +31,7 @@ jobs:
       - name: Build with Maven
         run: |
             mvn clean package
-            echo $HOME
-            mkdir -p $HOME/myapp
+            mkdir -p /home/myapp
             cp target/TelegramBot-3.2.2.jar /home/myapp/app.jar
             
       - name: List target directory

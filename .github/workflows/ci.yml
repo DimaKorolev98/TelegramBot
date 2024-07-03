@@ -53,7 +53,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: myapp
-          path: $HOME
           
       - name: Add SSH key to known_hosts
         run: |
@@ -63,7 +62,7 @@ jobs:
           
           
       - name: List downloaded artifacts
-        run: ls -l $HOME
+        run: ls -l  /home/runner/work/TelegramBot/TelegramBot
      
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3

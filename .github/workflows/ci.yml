@@ -70,5 +70,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Copy JAR to server
-        run: scp $HOME/work/TelegramBot/TelegramBot/target/TelegramBot-3.2.2.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home
-  
+        run: |
+          ls -l $HOME/work/TelegramBot/TelegramBot/target/TelegramBot-3.2.2.jar
+          scp $HOME/work/TelegramBot/TelegramBot/target/TelegramBot-3.2.2.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home
+    

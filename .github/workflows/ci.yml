@@ -71,6 +71,5 @@ jobs:
 
       - name: Copy JAR to server
         run: |
-          cd  $HOME/work/TelegramBot/TelegramBot/target 
-          cd TelegramBot-3.2.2.jar
-          ls
+          cd  $HOME/work/TelegramBot/TelegramBot/
+          scp -o StrictHostKeyChecking=no TelegramBot-3.2.2.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp 

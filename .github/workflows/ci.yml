@@ -35,8 +35,6 @@ jobs:
       - name: List target directory
         run: | 
           ls -l target
-          cd target/TelegramBot-3.2.2.jar
-          ls -la
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
@@ -55,7 +53,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: myapp
-          path: /home/runner/work/TelegramBot/TelegramBot/target/TelegramBot-3.2.2.jar
+          path: $HOME
           
       - name: Add SSH key to known_hosts
         run: |

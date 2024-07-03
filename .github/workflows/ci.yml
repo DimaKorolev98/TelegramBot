@@ -63,7 +63,7 @@ jobs:
           
           
       - name: List downloaded artifacts
-        run: ls -l $HOME/work/TelegramBot/TelegramBot/target/TelegramBot-3.2.2.jar
+        run: ls -l $HOME
      
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3

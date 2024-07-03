@@ -33,7 +33,10 @@ jobs:
             mvn clean package
             
       - name: List target directory
-        run: ls -l target
+        run: | 
+          ls -l target
+          cd target/TelegramBot-3.2.2.jar
+          ls -la
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2

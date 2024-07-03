@@ -73,6 +73,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            echo ${{ secrets.SSH_HOST }}
+            echo ${{ secrets.SSH_USERNAME }}
+            echo ${{ secrets.SSH_PORT }}
+            echo ${{ secrets.SSH_PRIVATE_KEY }}
             scp $HOME/work/TelegramBot/TelegramBot/target/TelegramBot-3.2.2.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home
             ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}
             cd /myapp && java -jar TelegramBot-3.2.2.jar

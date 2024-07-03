@@ -77,5 +77,5 @@ jobs:
           scp -o StrictHostKeyChecking=no myapp.zip ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp 
 
       - name: Deploy on server
-        run: ssh  ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd /myapp && unzip myapp.zip" 
+        run: ssh  ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd /myapp && unzip myapp.zip && pkill -f TelegramBot-3.2.2.jar && java -jar TelegramBot-3.2.2.jar" 
     

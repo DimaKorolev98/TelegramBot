@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.entity.Photo;
+import org.example.servises.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -17,10 +19,12 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
@@ -31,6 +35,8 @@ private String botToken;
 
     @Autowired
     ResourceLoader resourceLoader;
+    @Autowired
+    PhotoService photoService;
 
 
 
@@ -47,19 +53,15 @@ private String botToken;
 
 
     public void sendPhoto(String chatId, String filename, String caption) throws TelegramApiException {
-        try {
-            Resource photoResource = resourceLoader.getResource("classpath:" + filename);
-            InputStream inputStream = photoResource.getInputStream();
+        Photo photo = photoService.getPhoto(filename);
+        InputStream inputStream = new ByteArrayInputStream(photo.getData());
 
-            SendPhoto sendPhoto = new SendPhoto();
-            sendPhoto.setChatId(chatId);
-            sendPhoto.setPhoto(new InputFile(inputStream,"photo.jpg")); // Set the photo using the input stream
-            sendPhoto.setCaption(caption);
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(chatId);
+        sendPhoto.setPhoto(new InputFile(inputStream,filename)); // Set the photo using the input stream
+        sendPhoto.setCaption(caption);
 
-            execute(sendPhoto);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        execute(sendPhoto);
     }
 
     public void sendMsg(String chatId, String s) {
@@ -80,7 +82,7 @@ private String botToken;
         Message message = update.getMessage();
         String text = message.getText();
         String chatId = message.getChat().getId().toString();
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("photo_pun_good.jpg");
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("images/photo_pun_good.jpg");
 
 
         long userId = message.getFrom().getId();

@@ -54,8 +54,10 @@ jobs:
           chmod 700 ~/.ssh
           chmod 600 ~/.ssh/known_hosts
 
-      - name: Add Host Key
-        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: Add SSH Host Key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: SSH Deploy
         uses: appleboy/ssh-action@master
@@ -66,11 +68,23 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             mkdir -p /myapp
-            scp ${{ github.workspace }}/app.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp/
             if [ -f "/myapp/app.jar" ]; then
-              echo "app.jar successfully transferred"
+              echo "app.jar found in /myapp/"
               cd /myapp
               java -jar app.jar
             else
-              echo "app.jar not found in /myapp
+              echo "app.jar not found in /myapp/"
+              echo "Attempting to copy from the artifact directory"
+              cp $HOME/myapp/app.jar /myapp/
+              if [ $? -eq 0 ]; then
+                echo "Successfully copied app.jar to /myapp/"
+                cd /myapp
+                java -jar app.jar
+              else
+                echo "Failed to copy app.jar. Deployment unsuccessful."
+                exit 1
+              fi
+            fi
+          
+      
      

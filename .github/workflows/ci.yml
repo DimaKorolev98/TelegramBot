@@ -47,6 +47,13 @@ jobs:
           name: app-jar
           path: ${{ github.workspace }}/app.jar
 
+      - name: Setup SSH directory
+        run: |
+          mkdir -p ~/.ssh
+          touch ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/known_hosts
+
       - name: Add Host Key
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 

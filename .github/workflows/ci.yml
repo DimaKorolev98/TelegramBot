@@ -25,11 +25,9 @@ jobs:
           mvn clean package
           mkdir -p $HOME/myapp
           cp target/TelegramBot-3.2.2.jar $HOME/myapp/app.jar
-          
-      - name: List target directory
-        run: | 
-          ls -l target
 
+      - name: List target directory
+        run: ls -l target
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -48,8 +46,8 @@ jobs:
           name: app-jar
           path: $HOME/myapp
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
@@ -60,5 +58,3 @@ jobs:
             scp $HOME/myapp/app.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp
             cd /myapp
             java -jar app.jar
-
-       

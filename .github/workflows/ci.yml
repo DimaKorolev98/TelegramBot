@@ -45,7 +45,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-jar
-          path: ${{ github.workspace }}/app.jar
+          path: ${{ github.workspace }}
 
       - name: Setup SSH directory
         run: |
@@ -66,12 +66,11 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             mkdir -p /myapp
-            ls -l $HOME/myapp/app.jar
-            if [ -f "$HOME/myapp/app.jar" ]; then
-              cp $HOME/myapp/app.jar /myapp/
+            scp ${{ github.workspace }}/app.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp/
+            if [ -f "/myapp/app.jar" ]; then
+              echo "app.jar successfully transferred"
               cd /myapp
               java -jar app.jar
             else
-              echo "app.jar not found in $HOME/myapp/"
-              exit 1
-            fi
+              echo "app.jar not found in /myapp
+     

@@ -33,8 +33,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-jar
-          path: ${{ github.workspace }}/target/TelegramBot-3.2.2.jar
-
+          path: target/TelegramBot-3.2.2.jar
 
   deploy:
     needs: build
@@ -45,7 +44,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-jar
-          path: ${{ github.workspace }}
+          path: .
 
       - name: Setup SSH directory
         run: |
@@ -68,23 +67,14 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             mkdir -p /myapp
+            scp ${{ github.workspace }}/TelegramBot-3.2.2.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp/app.jar
             if [ -f "/myapp/app.jar" ]; then
-              echo "app.jar found in /myapp/"
+              echo "app.jar successfully transferred to /myapp/"
               cd /myapp
               java -jar app.jar
             else
-              echo "app.jar not found in /myapp/"
-              echo "Attempting to copy from the artifact directory"
-              cp $HOME/myapp/app.jar /myapp/
-              if [ $? -eq 0 ]; then
-                echo "Successfully copied app.jar to /myapp/"
-                cd /myapp
-                java -jar app.jar
-              else
-                echo "Failed to copy app.jar. Deployment unsuccessful."
-                exit 1
-              fi
-            fi
+            echo "Failed to transfer app.jar. Deployment unsuccessful."
+           exit
           
       
      

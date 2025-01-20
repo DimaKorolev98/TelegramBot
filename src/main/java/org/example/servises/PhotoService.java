@@ -4,6 +4,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.example.entity.Photo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -57,10 +59,12 @@ public class PhotoService   {
         return photoRepository.findAll();
     }
 
+    @Cacheable(value = "photos", key = "#name")
     public Photo getPhoto(String name) {
         return photoRepository.findByName(name);
     }
 
+    @CacheEvict(value = "photos", key = "#name")
     public Photo savePhoto(String name, byte[] data) {
         Photo photo = new Photo();
         photo.setName(name);

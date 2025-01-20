@@ -21,13 +21,7 @@ jobs:
           cache: 'maven'
 
       - name: Build with Maven
-        run: |
-          mvn clean package
-          mkdir -p $HOME/myapp
-          cp target/TelegramBot-3.2.2.jar $HOME/myapp/app.jar
-
-      - name: List target directory
-        run: ls -l target
+        run: mvn clean package
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -46,35 +40,23 @@ jobs:
           name: app-jar
           path: .
 
-      - name: Setup SSH directory
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          touch ~/.ssh/known_hosts
-          chmod 700 ~/.ssh
-          chmod 600 ~/.ssh/known_hosts
-
-      - name: Add SSH Host Key
-        run: |
-          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: SSH Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            mkdir -p /myapp
-            scp ${{ github.workspace }}/TelegramBot-3.2.2.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp/app.jar
-            if [ -f "/myapp/app.jar" ]; then
-              echo "app.jar successfully transferred to /myapp/"
-              cd /myapp
-              java -jar app.jar
+      - name: Deploy to server
+        run: |
+          scp TelegramBot-3.2.2.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp/app.jar
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
+            cd /myapp
+            if [ -f 'app.jar' ]; then
+              echo 'app.jar successfully transferred to /myapp/'
+              java -jar app.jar &
             else
-            echo "Failed to transfer app.jar. Deployment unsuccessful."
-           exit
-          
-      
-     
+              echo 'Failed to transfer app.jar. Deployment unsuccessful.'
+              exit 1
+            fi
+    

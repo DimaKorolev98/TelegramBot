@@ -47,6 +47,8 @@ jobs:
           name: app-jar
           path: ${{ github.workspace }}/app.jar
 
+      - name: Add Host Key
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: SSH Deploy
         uses: appleboy/ssh-action@master
@@ -57,6 +59,12 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             mkdir -p /myapp
-            scp $HOME/myapp/app.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp
-            cd /myapp
-            java -jar app.jar
+            ls -l $HOME/myapp/app.jar
+            if [ -f "$HOME/myapp/app.jar" ]; then
+              cp $HOME/myapp/app.jar /myapp/
+              cd /myapp
+              java -jar app.jar
+            else
+              echo "app.jar not found in $HOME/myapp/"
+              exit 1
+            fi

@@ -4,10 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
+import java.io.Serializable;
+
 
 @Entity
+@Data
 @Table(name = "`photos`")
-public class Photo {
+public class Photo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

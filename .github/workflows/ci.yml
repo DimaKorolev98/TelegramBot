@@ -50,7 +50,7 @@ jobs:
       - name: Deploy to server
         run: |
           scp TelegramBot-3.2.2.jar ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/myapp/app.jar
-          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
+          ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}
             cd /myapp
             if [ -f 'app.jar' ]; then
               echo 'app.jar successfully transferred to /myapp/'
